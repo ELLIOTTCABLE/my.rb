@@ -1,5 +1,5 @@
 require 'yaml'
-require 'myrb/core_ext/file'
+require 'myrb/core_ext'
 
 # Allows calling MyRB as +my.rb+ or +My.RB+, because I'm a lazy, semantic fucker - heh
 module Kernel

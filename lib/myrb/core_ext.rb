@@ -1,0 +1,1 @@
+require 'myrb/core_ext/file'

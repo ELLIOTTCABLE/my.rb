@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Warning
+desc: A warning needs to be added to my.rbs, to let people know that editing them directly is probably a bad idea
+type: :bugfix
+component: myrb
+release: 
+reporter: elliott cable <git@elliottcable.name>
+status: :unstarted
+disposition: 
+creation_time: 2008-05-21 20:16:14.938517 Z
+references: []
+
+id: 26cb46e672c6940c3c9bb163f9a0cd341dc14ffb
+log_events: 
+- - 2008-05-21 20:16:59.208830 Z
+  - elliott cable <git@elliottcable.name>
+  - created
+  - "Perhaps add a comment to the first line of the file on #save, and have #new_from ignore the first line if it matches."

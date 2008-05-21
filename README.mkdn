@@ -1,8 +1,44 @@
-MyRB
-====
+my.rb
+=====
 
-*Caveat:* This is nothing but a concept and some loose code right now. Please don't clone it and expect it to do anything useful for you! (-:
+my.rb, MyRB, or 'My .RBs' (My rubies), is a system to store your own personal library of ruby snippets and extensions (similar to [Ruby Facets](http://facets.rubyforge.org "Ruby Facets, a large collection of ruby extensions"),
+but for your own snippets) on your own computer, and to let you use them
+transparently in your published coding projects whenever you desire to do so,
+without even thinking about it.
 
-MyRB, or 'My .RBs' (My rubies), is a system to store your own personal library of ruby snippets and extensions (similar to [Ruby Facets](http://facets.rubyforge.org "Ruby Facets, a large collection of ruby extensions"), but for your own snippets) on your own computer, and to let you use them transparently in your published coding projects whenever you desire to do so, without even thinking about it.
+A lot more of the philosophy behind my.rb is available in the [initial blog post](http://blog.elliottcable.name/posts/myrb.xhtml "MyRB on elliottcable's blog") by [elliottcable](http://elliottcable.name "elliottcable's home page").
 
-A lot more of the philosophy behind MyRB is available in the [initial blog post](http://blog.elliottcable.name/posts/myrb.xhtml "MyRB on elliottcable's blog") by [elliottcable](http://elliottcable.name "elliottcable's home page").
+loading snippets
+----------------
+
+Before using my.rb, you must configure it - you can do this by running
+`my.rb init`, and following the resulting instructions.
+
+Once my.rb is configured, you can load a my.rb file as follows:
+
+    my.rb load[~/Desktop/test.my.rb]
+
+A my.rb file must be formatted as a comment block at the top, followed by the snippet code itself. As an example:
+
+    # This is just a small snippet that we're providing for you to test my.rb,
+    # it's pretty awesome!
+    
+    def Kernel.yay!
+      puts 'yay!'
+    end
+
+Feel free to copy that into a file, and try loading it.
+
+Once a my.rb is loaded into the library, it's simple to require it in your code:
+
+    require 'my.rb/test'
+
+This requires the snippet as a normal ruby library! You're all done, and ready to use your snippet.
+
+coming soon
+-----------
+
+- *deployment:* my.rb deploy, and all the my.rbs you've used in your project will be compiled into the project for inclusion
+- *no dependency:* my.rb will not add any package dependencies to your project - after my.rb deploy, your project will not require my.rb itself to function
+- *smart requirement:* my.rb will be smart enough to allow you to use certain kinds of simply-constructed snippets without even requiring them first, and will include them automatically during a my.rb deploy
+- *my.rb server:* you will be able to share your my.rb snippets online, and install snippets directly from the web (think sake -i)

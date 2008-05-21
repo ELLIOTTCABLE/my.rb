@@ -32,6 +32,13 @@ task :config do
   exit
 end
 
+task :load, :path do |_, args|
+  path = args[:path]
+  raise ArgumentError, '** You must provide a path to load a my.rb' unless path
+  m = my.rb.new_from path
+  m.save
+end
+
 task :default do
   system 'my.rb -T'
 end

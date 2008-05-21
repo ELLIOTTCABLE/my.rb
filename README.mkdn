@@ -1,0 +1,8 @@
+MyRB
+====
+
+*Caveat:* This is nothing but a concept and some loose code right now. Please don't clone it and expect it to do anything useful for you! (-:
+
+MyRB, or 'My .RBs' (My rubies), is a system to store your own personal library of ruby snippets and extensions (similar to [Ruby Facets](http://facets.rubyforge.org "Ruby Facets, a large collection of ruby extensions"), but for your own snippets) on your own computer, and to let you use them transparently in your published coding projects whenever you desire to do so, without even thinking about it.
+
+A lot more of the philosophy behind MyRB is available in the [initial blog post](http://blog.elliottcable.name/posts/myrb.xhtml "MyRB on elliottcable's blog") by [elliottcable](http://elliottcable.name "elliottcable's home page").

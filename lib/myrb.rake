@@ -39,6 +39,20 @@ task :load, :path do |_, args|
   m.save
 end
 
+# This doesn't do anything, because there's none of the local code defined.
+# I think I need to define multiple 'deployers' that initialize the codebase,
+# and then run deploy - for instance, initaite a merb app for scanning, or a
+# library by just including the main file.
+task :deploy, :path do |_, args|
+  path = args[:path] ? File.expand_path(args[:path]) : File.expand_path(pwd)
+  puts "** Deploying my.rbs to [#{File.join(path, 'my.rb')}]..."
+  my.rb.loaded.each do |m|
+    puts "-- #{m}.my.rb"
+    cp File.join(my.rb.config[:directory], 'my.rb', m, '.rb'), 
+       File.join(path, 'my.rb', m, '.rb'), :force => true
+  end
+end
+
 task :default do
   system 'my.rb -T'
 end

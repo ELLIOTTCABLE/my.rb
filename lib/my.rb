@@ -39,6 +39,10 @@ class MyRB
     end
   end
   
+  def self.expand_path myrb_path
+    File.expand_path(File.join(my.rb.config[:directory], 'my.rb', myrb_path, '.rb'))
+  end
+  
   # ==================
   # = As an instance =
   # ==================
@@ -62,7 +66,7 @@ class MyRB
       instance_variable_set(('@' + arg).to_sym, args[arg.to_sym] ? args[arg.to_sym] : nil)
     end
     
-    yield self if block
+    yield self if block_given?
     
     Variables.each do |arg|
       raise ArgumentError, "#{arg} must be defined on #{self.inspect}!" unless
@@ -102,11 +106,13 @@ class MyRB
     end
   end
   
-  # Saves a my.rb out to a .my.rb file in the my.rb dir
+  # Saves a my.rb out to a .my.rb file in the my.rb dir, or an optional destination
+  # Takes :overwrite, :base (base path), and :to (direct path, overrides :base)
   def save *args
     args = args.inject(Hash.new) {|a,o| raise ArgumentError unless a.class == Hash; o.merge a }
-    path = File.expand_path File.join(my.rb.config[:directory], 'my.rb', @categories, "#{@name}.rb")
-    if File.file? path
+    base = args[:base]  || my.rb.config[:directory]
+    path = args[:to]    || File.expand_path(File.join(base, 'my.rb', @categories, "#{@name}.rb"))
+    if File.file? path && !args[:overwrite]
       raise "** my.rb #{@name} exists at [#{path}] already! Pass :overwrite => true if you wish to overwrite it."
     end
     File.open path, File::RDWR|File::TRUNC|File::CREAT do |file|

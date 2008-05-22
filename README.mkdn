@@ -35,10 +35,71 @@ Once a my.rb is loaded into the library, it's simple to require it in your code:
 
 This requires the snippet as a normal ruby library! You're all done, and ready to use your snippet.
 
+deployment
+----------
+
+*Caveat:* Some of this, I'm still not too sure about - so specifics here are subject to change.
+
+Now you've been using my.rb while programming, and your code is littered with
+things along the line of `require 'my.rb/autotool'`,
+`require 'my.rb/tools/rake/send_task'`, and
+`%w(slugize pathize normalize).each {|m| require "my.rb/string/#{m}"}`. Now
+you want to deploy your package - say, package your library up as a
+gem for your users, or push your rails app to a server where it will be run as
+a website. Wait! Your users/server won't have all your favorite my.rb snippets
+loaded. What do you do?
+
+`my.rb::Rake::DeployTask` to the rescue. As long as your library/app is
+required or initialized in some way in your `Rakefile.rb`, so that all the app
+files have been loaded into Ruby, you can add a task to your Rakefile that
+will deploy the my.rb files for you as follows:
+
+    require 'myrb/task'
+
+    namespace :myrb do
+      my.rb::Rake::DeployTask.new
+    end
+
+It's that simple. Now, when you run `rake myrb:deploy`, all the snippets you
+have used in your code will be copied into your app, ready to be required in
+on your target computer without the help of my.rb itself.
+
+For this to work in any intelligent / useful way, however, you'll have to tell
+my.rb what directory your code will want my.rbs in, and you'll have to add
+that directory to the $LOAD_PATH yourself (in whatever way you find most
+appropriate). For instance, if you added myapp/lib to the includes path, then
+you could define the rake task as follows in myapp/Rakefile:
+
+    require 'myrb/task'
+
+    namespace :myrb do
+      my.rb::Rake::DeployTask.new do |myrbs|
+        myrbs.each :copy, :to => 'lib'
+      end
+    end
+
+If you have some need to preform more specific magic on each myrb used in your
+app, you can pass a block to #each:
+
+    require 'myrb/task'
+
+    namespace :myrb do
+      my.rb::Rake::DeployTask.new do |myrbs|
+        myrbs.each do |myrb|
+          puts "This could be some cool stuff I'm doing to each my.rb"
+          puts "Or I could just tell you that this my.rb is #{myrb.length} chars."
+        end
+      end
+    end
+
+I'll probably be adding more convenience methods to the task, for instance for
+Rails, and for the standard Gem structure. Until then, you can probably make do with :copy (-:
+
+*Remember:* You have to take care of adding the my.rb parent directory to the $LOAD_PATH on your own!
+
 coming soon
 -----------
 
-- *deployment:* my.rb deploy, and all the my.rbs you've used in your project will be compiled into the project for inclusion
 - *no dependency:* my.rb will not add any package dependencies to your project - after my.rb deploy, your project will not require my.rb itself to function
 - *smart requirement:* my.rb will be smart enough to allow you to use certain kinds of simply-constructed snippets without even requiring them first, and will include them automatically during a my.rb deploy
 - *my.rb server:* you will be able to share your my.rb snippets online, and install snippets directly from the web (think sake -i)

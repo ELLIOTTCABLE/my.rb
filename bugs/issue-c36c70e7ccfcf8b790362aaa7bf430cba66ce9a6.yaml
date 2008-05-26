@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Specs
+desc: Should be able to attach specs to your my.rbs, and then run the specs for all your my.rbs at once.
+type: :feature
+component: myrb
+release: 
+reporter: elliott cable <git@elliottcable.name>
+status: :unstarted
+disposition: 
+creation_time: 2008-05-26 08:59:14.391720 Z
+references: []
+
+id: c36c70e7ccfcf8b790362aaa7bf430cba66ce9a6
+log_events: 
+- - 2008-05-26 08:59:50.714671 Z
+  - elliott cable <git@elliottcable.name>
+  - created
+  - Perhaps, to allow my.rb creation to stay one-file, use the content after __END__ in a my.rb (if any) as specs? Save them to a seperate file, though?

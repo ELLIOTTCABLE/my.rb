@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Other commenting styles
+desc: Suppot =begin/=end style comment blocks for my.rb descriptions
+type: :bugfix
+component: myrb
+release: 
+reporter: elliott cable <git@elliottcable.name>
+status: :unstarted
+disposition: 
+creation_time: 2008-05-26 09:02:18.837666 Z
+references: []
+
+id: c97e3f4df0e7fd03bac26a5a0f3619b8e823f3d5
+log_events: 
+- - 2008-05-26 09:02:21.964611 Z
+  - elliott cable <git@elliottcable.name>
+  - created
+  - ""

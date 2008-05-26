@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Use rdoc instead of parsed out descriptions
+desc: Instead of manually parsing out descriptions, just let rdoc be generated - save a lot of work our end
+type: :feature
+component: myrb
+release: 
+reporter: elliott cable <git@elliottcable.name>
+status: :unstarted
+disposition: 
+creation_time: 2008-05-26 09:03:08.643950 Z
+references: []
+
+id: c007b709ed2bb04057a1f9473b96af8922494562
+log_events: 
+- - 2008-05-26 09:03:10.283702 Z
+  - elliott cable <git@elliottcable.name>
+  - created
+  - ""

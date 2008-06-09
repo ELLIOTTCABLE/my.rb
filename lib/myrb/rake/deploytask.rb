@@ -1,4 +1,4 @@
-require 'rubygems'
+require 'myrb'
 require 'rake'
 require 'fileutils'
 require 'rake/tasklib'
@@ -39,7 +39,7 @@ class MyRB
         desc 'Deploy my.rbs' unless ::Rake.application.last_comment
         task name do
           puts "** Deploying my.rbs..."
-          my.rb.loaded.each do |myrb|
+          MyRB.loaded.each do |myrb|
             puts "-- #{myrb}.my.rb"
             @block.call myrb
           end
@@ -62,7 +62,7 @@ class MyRB
           lambda do |myrb|
             destination = File.join(File.expand_path(args[:to] || 'snippets'), %x[whoami].strip, 'my.rb', "#{myrb}.rb")
             FileUtils.mkdir_p destination rescue nil
-            FileUtils.cp my.rb.expand_path(myrb), destination
+            FileUtils.cp MyRB.expand_path(myrb), destination
           end
           
         when nil

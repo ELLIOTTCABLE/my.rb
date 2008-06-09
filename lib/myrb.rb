@@ -1,18 +1,6 @@
 require 'yaml'
 require 'myrb/core_ext'
 
-# Allows calling MyRB as +my.rb+ or +My.RB+, because I'm a lazy, semantic fucker - heh
-module Kernel
-  protected # Don't touch me, you drink!
-  def my; My; end
-  module My
-    class <<self
-      def rb; ::MyRB; end
-      alias_method :RB, :rb
-    end
-  end
-end
-
 # Aaaaand we welcome to the stage, Mr. My.RB! *clapclapclap*
 class MyRB
   Directory = File.join '~', '.my.rb'
@@ -35,12 +23,12 @@ class MyRB
   
   def self.save_config
     File.open File.expand_path(Config), File::WRONLY|File::TRUNC|File::CREAT do |file|
-      ::YAML::dump my.rb.config
+      ::YAML::dump MyRB.config
     end
   end
   
   def self.expand_path myrb_path
-    File.expand_path(File.join(my.rb.config[:directory], 'my.rb', "#{myrb_path}.rb"))
+    File.expand_path(File.join(MyRB.config[:directory], 'my.rb', "#{myrb_path}.rb"))
   end
   
   # ==================
@@ -77,12 +65,12 @@ class MyRB
   def self.new_from path, *args, &block
     args = args.inject(Hash.new) {|a,o| raise ArgumentError unless a.class == Hash; o.merge a }
     path = File.expand_path path
-    categories = path.match(%r!#{my.rb.config[:directory]}!) ? File.split_all(path.gsub(%r!^#{my.rb.config[:directory]}!, '')) : []
+    categories = path.match(%r!#{MyRB.config[:directory]}!) ? File.split_all(path.gsub(%r!^#{MyRB.config[:directory]}!, '')) : []
     name = File.basename(path).gsub(%r!(\.my)?\.rb$!, '')
     
     content = File.open(path, File::RDONLY) {|file| file.read}
     
-    my.rb.new(
+    MyRB.new(
     { :name        => name,
       :categories  => categories,
       :content     => content
@@ -93,7 +81,7 @@ class MyRB
   # Takes :overwrite, :base (base path), and :to (direct path, overrides :base)
   def save *args
     args = args.inject(Hash.new) {|a,o| raise ArgumentError unless a.class == Hash; o.merge a }
-    base = args[:base]  || my.rb.config[:directory]
+    base = args[:base]  || MyRB.config[:directory]
     path = args[:to]    || File.expand_path(File.join(*[base, 'my.rb', @categories, "#{@name}.rb"].flatten))
     if File.file?(path) && !args[:overwrite]
       raise "** my.rb #{@name} exists at [#{path}] already! Pass :overwrite => true if you wish to overwrite it."
@@ -109,7 +97,7 @@ end
 
 # One last request... before I die... *gaaasp*...
 begin
-  $LOAD_PATH.unshift File.expand_path(my.rb.config[:directory])
+  $LOAD_PATH.unshift File.expand_path(MyRB.config[:directory])
 rescue RuntimeError => e
   puts e
 end

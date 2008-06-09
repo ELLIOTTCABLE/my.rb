@@ -5,31 +5,38 @@ require 'rake/tasklib'
 
 class MyRB
   module Rake
-
+    
+    
+    # The class for a task to create your myrbs. Used as follows:
+    #   MyRB::Rake::DeployTask.new
+    # The default action for deploy is to copy the my.rbs to your project dir, in
+    # project/snippets/<your username>/my.rb/foo.rb - you can change this path with :to
+    #   MyRB::Rake::DeployTask.new do |myrbs|
+    #     myrbs.each :copy, :to => 'blah'
+    #   end
+    # You can also apply a different task name (the default is 'deploy'), and a custom
+    # deployment block to execute on each myrb during deployment.
+    #   MyRB::Rake::DeployTask.new :a_different_task_name do |myrbs|
+    #     myrb.each do |myrb|
+    #       puts "Iterating over #{myrb}, but not doing anything with it! Hah, sucker!"
+    #     end
+    #   end
     class DeployTask < ::Rake::TaskLib
       # Name of deploy task. (default is :deploy)
       attr_accessor :name
-
-      # Array of directories to be added to $LOAD_PATH before running.
-      attr_accessor :libs
-
+      
       # Defines a new task, using the name +name+.
       def initialize(name=:deploy)
         @name = name
-        @libs = ['my cool lib dir']
-
+        each :copy # Sets default @block
+        
         yield self if block_given?
+        
         define
       end
-
+      
       def define
-        spec_script = File.expand_path(File.dirname(__FILE__) + '/../../../bin/spec')
-
-        lib_path = libs.join(File::PATH_SEPARATOR)
-        
-        unless ::Rake.application.last_comment
-          desc 'Deploy my.rbs'
-        end
+        desc 'Deploy my.rbs' unless ::Rake.application.last_comment
         task name do
           puts "** Deploying my.rbs..."
           my.rb.loaded.each do |myrb|
@@ -37,7 +44,7 @@ class MyRB
             @block.call myrb
           end
         end
-
+        
         self
       end
       
@@ -53,13 +60,14 @@ class MyRB
           # target_dir/ will be somehow added to the load path, so the
           # +require 'my.rb/foo' will refer to target_dir/my.rb/foo.rb
           lambda do |myrb|
-            destination = File.expand_path(args[:to] || FileUtils.pwd)
-            cp my.rb.expand_path myrb, File.join(path, 'my.rb', myrb, '.rb')
+            destination = File.expand_path(args[:to] || 'snippets')
+            FileUtils.mkdir_p destination rescue nil
+            FileUtils.cp my.rb.expand_path myrb, File.join(destination, %x[whoami].strip, 'my.rb', "#{myrb}.rb")
           end
           
         when nil
           # Nil args, so expect a custom block
-          block
+          block_given? ? block : lambda {|m| nil }
         end
       end
       

@@ -5,7 +5,7 @@ type: :feature
 component: myrb
 release: 
 reporter: elliott cable <git@elliottcable.name>
-status: :unstarted
+status: :in_progress
 disposition: 
 creation_time: 2008-05-26 08:59:14.391720 Z
 references: []
@@ -16,3 +16,11 @@ log_events:
   - elliott cable <git@elliottcable.name>
   - created
   - Perhaps, to allow my.rb creation to stay one-file, use the content after __END__ in a my.rb (if any) as specs? Save them to a seperate file, though?
+- - 2008-06-09 02:33:32.935424 Z
+  - elliottcable <git@elliottcable.name>
+  - commented
+  - Use some sort of wrapper method that only runs a block if Spec is defined, and thus if rspec is included.
+- - 2008-06-09 02:34:38.488972 Z
+  - elliottcable <git@elliottcable.name>
+  - changed status from unstarted to in_progress
+  - Going to add such a method, and then spec.

@@ -40,20 +40,17 @@ class MyRB
   end
   
   def self.expand_path myrb_path
-    File.expand_path(File.join(my.rb.config[:directory], 'my.rb', myrb_path, '.rb'))
+    File.expand_path(File.join(my.rb.config[:directory], 'my.rb', "#{myrb_path}.rb"))
   end
   
   # ==================
   # = As an instance =
   # ==================
-  Variables = %w(name description categories)
+  Variables = %w(name categories content)
   
   # The 'name' of this my.rb, which must be filename-friendly
   # This my.rb will be used by +require 'my.rb/category/subcat/name'+
   attr_accessor :name
-  
-  # A short description of this my.rb, for future reference/sharing.
-  attr_accessor :description
   
   # The 'category path' to this my.rb. An array. ['category', 'subcat'] is the
   # category path of the my.rb referenced by +require 'my.rb/category/subcat/name'+
@@ -80,30 +77,16 @@ class MyRB
   def self.new_from path, *args, &block
     args = args.inject(Hash.new) {|a,o| raise ArgumentError unless a.class == Hash; o.merge a }
     path = File.expand_path path
-    categories = path.match(%r|^/.*/my\.rb/|) ? File.split_all(path.gsub(%r|^/.*/my\.rb/|, '')) : []
-    name = File.basename(path).gsub(/(\.my)?\.rb$/, '')
+    categories = path.match(%r!#{my.rb.config[:directory]}!) ? File.split_all(path.gsub(%r!^#{my.rb.config[:directory]}!, '')) : []
+    name = File.basename(path).gsub(%r!(\.my)?\.rb$!, '')
     
-    description, content = my.rb.parse path
+    content = File.open(path, File::RDONLY) {|file| file.read}
+    
     my.rb.new(
     { :name        => name,
       :categories  => categories,
-      :description => description,
       :content     => content
     }.merge(args), &block)
-  end
-  
-  # Gets a description, and code, from a Myrbfile/.my.rb file.
-  def self.parse path
-    File.open path, File::RDONLY do |file|
-      snippet = file.read
-      match = snippet.match /(^(?:\s*#[^\n]*\n)*)[\s\n]*(.*)/m
-      comment = match[1]
-      content = match[2]
-      
-      # Gets rid of all line returns and comment hashes, and turns it into a single sentance.
-      description = comment.gsub(/(^\s*#\s|\s*\n\s*#\s)/, ' ').strip
-      [description, content]
-    end
   end
   
   # Saves a my.rb out to a .my.rb file in the my.rb dir, or an optional destination
@@ -111,13 +94,11 @@ class MyRB
   def save *args
     args = args.inject(Hash.new) {|a,o| raise ArgumentError unless a.class == Hash; o.merge a }
     base = args[:base]  || my.rb.config[:directory]
-    path = args[:to]    || File.expand_path(File.join(base, 'my.rb', @categories, "#{@name}.rb"))
-    if File.file? path && !args[:overwrite]
+    path = args[:to]    || File.expand_path(File.join(*[base, 'my.rb', @categories, "#{@name}.rb"].flatten))
+    if File.file?(path) && !args[:overwrite]
       raise "** my.rb #{@name} exists at [#{path}] already! Pass :overwrite => true if you wish to overwrite it."
     end
     File.open path, File::RDWR|File::TRUNC|File::CREAT do |file|
-      file.puts @description.gsub /^/, "# "
-      file << "\n"
       file.puts @content
       file.close
     end
@@ -128,7 +109,7 @@ end
 
 # One last request... before I die... *gaaasp*...
 begin
-  $LOAD_PATH.unshift File.join(my.rb.config[:directory])
+  $LOAD_PATH.unshift File.expand_path(my.rb.config[:directory])
 rescue RuntimeError => e
   puts e
 end

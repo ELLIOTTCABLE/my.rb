@@ -60,9 +60,9 @@ class MyRB
           # target_dir/ will be somehow added to the load path, so the
           # +require 'my.rb/foo' will refer to target_dir/my.rb/foo.rb
           lambda do |myrb|
-            destination = File.expand_path(args[:to] || 'snippets')
+            destination = File.join(File.expand_path(args[:to] || 'snippets'), %x[whoami].strip, 'my.rb', "#{myrb}.rb")
             FileUtils.mkdir_p destination rescue nil
-            FileUtils.cp my.rb.expand_path myrb, File.join(destination, %x[whoami].strip, 'my.rb', "#{myrb}.rb")
+            FileUtils.cp my.rb.expand_path(myrb), destination
           end
           
         when nil
